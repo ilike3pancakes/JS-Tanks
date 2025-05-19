@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>JS Tanks</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./css/style.css" type="text/css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <canvas id="canvas" width="400" height="400"></canvas>
+        <div id="overlay"></div>
+        <div id="divOptions">
+            <div id="divSpeed" title="Select the game speed">
+                <select id="selSpeed"></select>
+            </div>
+            <div id="divView" title="View game statistics">
+                <input id="toggleView" type="checkbox" checked>
+                <label id="toggleViewLabel" for="toggleView">🎥</label>
+            </div>
+            <div id="divSound" title="Enable sound">
+                <input id="toggleSound" type="checkbox">
+                <label id="toggleSoundLabel" for="toggleSound">🔊</label>
+            </div>
+            <div id="divBlocking" title="Allow missile interception">
+                <input id="toggleBlocking" type="checkbox">
+                <label id="toggleBlockingLabel" for="toggleBlocking">🛡️</label>
+            </div>
+        </div>
+        <img id="bgImage" src="./assets/bg.png">
+        <script src="./scripts/constants.js"></script>
+        <script src="./scripts/math.js"></script>
+        <script src="./scripts/gamepad.js"></script>
+        <script src="./scripts/controls.js"></script>
+        <script src="./scripts/sounds.js"></script>
+        <script src="./scripts/colors.js"></script>
+        <script src="./tanks/tankA.js"></script>
+        <script src="./tanks/tankB.js"></script>
+        <script src="./tanks/tankManual.js"></script>
+        <script src="./tanks/tankDebug.js"></script>
+        <script src="./scripts/missileclass.js"></script>
+        <script src="./scripts/tankclass.js"></script>
+        <script src="./scripts/main.js"></script>
+    </body>
+</html>
