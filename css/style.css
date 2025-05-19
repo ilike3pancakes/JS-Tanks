@@ -26,7 +26,6 @@ canvas {
     border: 1px solid white;
     border-radius: 7px;
     background-color: #888888;
-    box-shadow: 10px 10px 7.5px rgba(0, 0, 0, 0.9);
     position: relative; /* Needed for absolute positioning of options in landscape */
     height: auto;
     width: 83vw;

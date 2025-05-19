@@ -30,7 +30,7 @@ function tankBMain(tank, arena) {
     
     // Scanning logic
     else {
-        if (!tank.speed) tank.speed = 1; // if the tank isnt moving then start driving
+        if (!tank.speed) tank.speed = 1; // if the tank isn't moving then start driving
         tank.bodyTurn = 0;  // drive in a straight line
         tank.gunTurn = 1;   // turn the turret to scan for targets
     }

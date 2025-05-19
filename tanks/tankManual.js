@@ -20,8 +20,7 @@ function manualTank(tank, arena) {
         a2 = (a2 + 360000) % 360;
         if (a1 > 180) a1 -= 360;
         if (a2 > 180) a2 -= 360;
-        const diff = (a2 - a1 + 180) % 360 - 180;
-        return diff;
+        return (a2 - a1 + 180) % 360 - 180;
     };
 
     // Accessing the objects in the global scope is cheating
@@ -88,8 +87,6 @@ function manualTank(tank, arena) {
     if (controller.l1) {
         tank.speed = 0;
     }
-
-
 
     // Turn gun toward mouse
     if (!tank.retained.controllerConnected) {

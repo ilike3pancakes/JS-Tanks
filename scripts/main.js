@@ -1,5 +1,5 @@
 
-let gameover = false;
+let gameOver = false;
 let iteration = 0;
 let tanks = [];
 let arena = {};
@@ -12,7 +12,6 @@ let scorePercentageDif = {};
 let winPercentage = {};
 let gameCount = 0;
 let winBalance = {};
-let lastWinState = 0;
 let missilesFired = [0, 0];
 let missilesHit = [0, 0];
 let tankCollisions = [0, 0];
@@ -27,8 +26,6 @@ let totalGameDuration = 0;
 let gameTimeInSeconds = 0;
 let lastTime = 0;
 
-let obstacleDensity = 0.9;
-
 const background = document.getElementById("bgImage");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -42,7 +39,7 @@ function newGame() {
     iteration = 0;
     tanks = [];
     arena = {};
-    gameover = false;
+    gameOver = false;
     gameCount++;
 
     const distance = (Math.min(canvas.width, canvas.height) / 2) * 0.7;
@@ -80,17 +77,6 @@ function newGame() {
 }
 
 
-function objectsOverlap(o1, o2) {
-    return !(
-        o1.x + o1.width <= o2.x || o2.x + o2.width <= o1.x ||
-        o1.y + o1.height <= o2.y || o2.y + o2.height <= o1.y
-    );
-}
-
-
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
     gamepad.initialize();
 });
@@ -108,7 +94,7 @@ function animate(currentTime) {
     }, 1000 / fps);
     
     
-    let gameSpeed = 1;
+    let gameSpeed;
     const speedValue = document.getElementById("selSpeed").value;
     if (speedValue < 0) {
         fps = 60 / (1 + Math.abs(speedValue));
@@ -201,15 +187,15 @@ function animate(currentTime) {
                 ctx.strokeStyle = "#000000";
                 ctx.lineWidth = 1;
                 ctx.fillStyle = "#ffffff";
-                ctx.strokeText(~~scores[p1.index] + ~~p1.matchScore, 6, 19);
-                ctx.fillText(~~scores[p1.index] + ~~p1.matchScore, 6, 19);
+                ctx.strokeText(`${~~scores[p1.index] + ~~p1.matchScore}`, 6, 19);
+                ctx.fillText(`${~~scores[p1.index] + ~~p1.matchScore}`, 6, 19);
 
                 // Show tank A wins
                 ctx.textAlign = "right";
                 ctx.strokeStyle = "#000000";
                 ctx.lineWidth = 1;
-                ctx.strokeText(winCounts[p1.index], energyBarWidth + 6, 19);
-                ctx.fillText(winCounts[p1.index], energyBarWidth + 6, 19);
+                ctx.strokeText(`${winCounts[p1.index]}`, energyBarWidth + 6, 19);
+                ctx.fillText(`${winCounts[p1.index]}`, energyBarWidth + 6, 19);
                 ctx.restore();
         
 
@@ -237,15 +223,15 @@ function animate(currentTime) {
                 ctx.strokeStyle = "#000000";
                 ctx.lineWidth = 1;
                 ctx.fillStyle = "#ffffff";
-                ctx.strokeText(~~scores[p2.index] + ~~p2.matchScore, arena.width - 6, 19);
-                ctx.fillText(~~scores[p2.index] + ~~p2.matchScore, arena.width - 6, 19);
+                ctx.strokeText(`${~~scores[p2.index] + ~~p2.matchScore}`, arena.width - 6, 19);
+                ctx.fillText(`${~~scores[p2.index] + ~~p2.matchScore}`, arena.width - 6, 19);
 
                 // Show tank B wins
                 ctx.textAlign = "left";
                 ctx.strokeStyle = "#000000";
                 ctx.lineWidth = 1;
-                ctx.strokeText(winCounts[p2.index], arena.width - energyBarWidth - 6, 19);
-                ctx.fillText(winCounts[p2.index], arena.width - energyBarWidth - 6, 19);
+                ctx.strokeText(`${winCounts[p2.index]}`, arena.width - energyBarWidth - 6, 19);
+                ctx.fillText(`${winCounts[p2.index]}`, arena.width - energyBarWidth - 6, 19);
                 ctx.restore();
 
             } catch (e) {console.error(e)}
@@ -286,13 +272,13 @@ function animate(currentTime) {
             tanks[0].state = "dead";
             tanks[1].state = "dead";
         }
-        if (arena.tanks.length === 0 && !gameover) {
+        if (arena.tanks.length === 0 && !gameOver) {
             let winner = { name: "Draw" };
             logGameData(winner);
             newGame();
         }
-        if (arena.tanks.length < 2 && !gameover) {
-            gameover = true;
+        if (arena.tanks.length < 2 && !gameOver) {
+            gameOver = true;
             const winner = arena.tanks[0];
             if (!winCounts[winner.index]) {
                 winCounts[winner.index] = 0;
@@ -313,7 +299,7 @@ function animate(currentTime) {
         }
 
         // Increment iteration
-        if (!gameover) {
+        if (!gameOver) {
             iteration++;
         }
         else {
@@ -449,7 +435,10 @@ function logGameData(winner) {
 }
 
 setInterval(() => {
-   if (!paused && selSpeed.value !== 0) gameTimeInSeconds++;
+    if (!paused && document.getElementById("selSpeed").value !== 0)
+    {
+        gameTimeInSeconds++;
+    }
 }, 1000);
 
 window.addEventListener("error", (e) => {
@@ -461,7 +450,7 @@ window.addEventListener("error", (e) => {
 function showError(error) {
     error = JSON.stringify(error, null, 2);
     const overlay = document.getElementById("overlay");
-    overlay.style.zIndex = 9999;
+    overlay.style.zIndex = "9999";
     overlay.innerHTML = `<pre>${error}</pre>`;
     overlay.style.display = "block";
 }

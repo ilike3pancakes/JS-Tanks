@@ -16,9 +16,6 @@
 - If your tank is struck by a missile, the amount of energy you lose is equivalent to the energy the missile had left at the moment of impact.
 
 
-
-
-
 ## Game Interaction and Fair Play
 
 Your tank's code in tankA.js or tankB.js must only interact with the game via the `tank` and `arena` objects passed as arguments
@@ -26,7 +23,6 @@ to your main function (`tankAMain` or `tankBMain`). These objects are your sole 
 tank. Directly accessing or modifying any other game elements, variables, or functions outside of these `tank` and `arena` objects
 is considered cheating. It violates the intended game mechanics, creates an unfair advantage, and undermines the integrity of
 the challenge. For fair play, limit your code's interaction exclusively to the properties of the input tank and arena objects.
-
 
 
 ## Game Constants
@@ -53,7 +49,6 @@ the challenge. For fair play, limit your code's interaction exclusively to the p
 | `DAMAGE_DEALT_POINTS`            | Number       | The amount of points awarded for for damage your tank deals to other tanks (this amount is multiplied by the damage dealt).
 | `SURVIVAL_BONUS_POINTS`          | Number       | The amount of bonus points awarded to the winner of the match for survival (this amount is multiplied by the winner's remaining energy.
 | `ACCURACY_BONUS_POINTS`          | Number       | The amount of bonus points awarded to the winner of the match for accuracy (this amount is multiplied by the winner's accuracy percentage).
-
 
 
 ## Read-Only Properties
@@ -132,7 +127,6 @@ the challenge. For fair play, limit your code's interaction exclusively to the p
 |    - `ownersIndex`               | Number       | The index of the tank that fired the detected missile.
 
 
-
 ## Controllable Properties
 
 | Property Name                    | Data Type   | Acceptable Value       | Default Value | Description
@@ -153,7 +147,6 @@ the challenge. For fair play, limit your code's interaction exclusively to the p
 | `tank.retained`                  | JSON Object | Any Valid JSON         | {}            | An empty JSON object for storing persistent data across iterations.
 
 
-
 ## Tank Methods
 
 | Method Name                      | Returns   | Description
@@ -162,7 +155,6 @@ the challenge. For fair play, limit your code's interaction exclusively to the p
 | `tank.angleFrom(x, y)`           | Number    | Returns the angle the specified `x` and `y` coordinates to your tank.
 | `tank.distanceTo(x, y)`          | Number    | Returns the distance your tank to the specified `x` and `y` coordinates.
 | `tank.fire(energy)`              | Number    | Fires a missile with the specified `energy`. The missile energy is limited `MAX_MISSILE_ENERGY`. Can not fire if `tank.gunHeat > 0` Returns `id` of fired missile (used as a key for `tank.missiles`).
-
 
 
 ## Built-in Functions

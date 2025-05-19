@@ -22,8 +22,8 @@ function tankAMain(tank, arena) {
         a2 = (a2 + 360000) % 360; // Same for the second angle.
         if (a1 > 180) a1 -= 360;   // Converts angles to be between -180 and 180 for easier calculation.
         if (a2 > 180) a2 -= 360;   // Same for the second angle.
-        const diff = (a2 - a1 + 180) % 360 - 180; // Calculates the shortest turning angle.
-        return diff;
+         // Calculates the shortest turning angle.
+        return (a2 - a1 + 180) % 360 - 180;
     }
 
     // **Setting Up Our Tank at the Beginning**
@@ -80,8 +80,8 @@ function tankAMain(tank, arena) {
         if (aimError < 5) { // Only fire if our aim is reasonably good.
             const distanceFactor = (1 - target.distance / maxDistance) ** 2; // Power increases if the target is far.
             const accuracyFactor = (1 - aimError / (5 * distanceFactor)) ** 2; // Power increases if our aim is good.
-            const firePower = 5 + accuracyFactor * 50 + distanceFactor * 45; // Calculate the firing power.
-            tank.fire = firePower // Tell the game to fire with the calculated power.
+             // Calculate the firing power.
+            tank.fire = 5 + accuracyFactor * 50 + distanceFactor * 45 // Tell the game to fire with the calculated power.
         }
     }
     else {

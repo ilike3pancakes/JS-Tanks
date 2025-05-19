@@ -59,7 +59,6 @@ function tankAMain(tank, arena) {
         tank.radarArc = 1;
         tank.speed = 1;
         tank.gunTurn = tank.calculateGunTurn(0, 0);
-        tank.bodyTurn = tank.bodyTurn;
         saved.wanderPattern = 0;
         saved.previousTargetData = [];
         saved.missileEvasionReverse = 0;
@@ -164,14 +163,15 @@ function tankAMain(tank, arena) {
     
     // Remove dead targets
     const deadTargetsExist = () => Object.keys(saved.targets).length > arena.tanksRemaining - 1;
+    let longestAbsence;
     while (deadTargetsExist()) {
-        let removalIndex = longestAbscence = -1;
+        let removalIndex = longestAbsence = -1;
         for (const targetIndex of Object.keys(saved.targets)) {
             const target = saved.targets[targetIndex];
-            const abscenseTime = tank.iteration - target.iteration;
-            if (abscenseTime > longestAbscence) {
+            const absenceTime = tank.iteration - target.iteration;
+            if (absenceTime > longestAbsence) {
                 removalIndex = targetIndex;
-                longestAbscence = abscenseTime;
+                longestAbsence = absenceTime;
             }
         }
         delete saved.targets[removalIndex];
@@ -211,6 +211,7 @@ function tankAMain(tank, arena) {
 
 
     // Handle detected tanks
+    let avgVelocityY;
     if (tank.detectedTanks.length > 0) {
 
         // Reset radar scan
@@ -219,9 +220,11 @@ function tankAMain(tank, arena) {
         saved.scanRotation = 0;
 
         // Save primary target
-        tank.detectedTanks = tank.detectedTanks.sort((a, b) => { return tank.getTargetPriority(a) - tank.getTargetPriority(b) });
+        tank.detectedTanks = tank.detectedTanks.sort((a, b) => {
+            return tank.getTargetPriority(a) - tank.getTargetPriority(b)
+        });
         let target = tank.detectedTanks[0];
-        saved.target = { ...target };
+        saved.target = {...target};
 
         // Set a victory message (in case target is destroyed)
         const taunts = [
@@ -242,7 +245,7 @@ function tankAMain(tank, arena) {
         }
 
         // Store and average previous target data for velocity
-        saved.previousTargetData.push({ x: target.x, y: target.y, angle: target.bodyAim, time: tank.iteration });
+        saved.previousTargetData.push({x: target.x, y: target.y, angle: target.bodyAim, time: tank.iteration});
         if (saved.previousTargetData.length > 5) {
             saved.previousTargetData.shift();
         }
@@ -261,8 +264,7 @@ function tankAMain(tank, arena) {
             }
             avgVelocityX /= Math.max(1, totalDeltaTime); // Avoid division by zero
             avgVelocityY /= Math.max(1, totalDeltaTime);
-        }
-        else {
+        } else {
             avgVelocityX = target.actualSpeed * Math.cos(target.bodyAim * DEGREES);
             avgVelocityY = target.actualSpeed * Math.sin(target.bodyAim * DEGREES);
         }
@@ -306,17 +308,16 @@ function tankAMain(tank, arena) {
             let firePower = (tank.energyLow) ? minFirePower : Math.min(50, minFirePower + accuracyBonus);
             firePower *= (1 + target.distance / MAX_DISTANCE) / 2;
             const missileEnergy = firePower * MISSILE_ENERGY_MULTIPLIER;
-            const missileTravelDistance = missileEnergy * MISSILE_SPEED;
             const missileEnergyAtImpact = missileEnergy - (target.distance / MISSILE_SPEED);
             if (firePower > minFirePower && missileEnergyAtImpact > firePower) {
                 saved.lastMissileId = tank.fire(firePower);
             }
         }
     }
-    
+
     // If no tank is detected
     else {
-        
+
         // Calculate scan direction
         if (!saved.scanDirection) {
             let aimAtX = saved?.target?.x || 0;
@@ -325,7 +326,7 @@ function tankAMain(tank, arena) {
             const randomDirection = 1 - Math.round(Math.random() * 2);
             saved.scanDirection = Math.sign(desiredGunTurn) || randomDirection;
         }
-        
+
         // Calculate scan speed and turn gun (radar will follow gun)
         const rotationAmount = saved.scanDirection * saved.scanSpeed;
         tank.gunTurn = saved.scanDirection * saved.scanSpeed;
@@ -405,7 +406,6 @@ function tankAMain(tank, arena) {
             const perfectTrajectory = tank.angleFrom(missile.x, missile.y);
             const trajectoryDifference = tank.angleDifference(perfectTrajectory, missile.aim);
             const aimError = Math.abs(trajectoryDifference);
-            const timeToImpactEstimate = missile.distance / missile.actualSpeed;
             const interceptionAimThreshold = 3 + 3 * missile.distance / MAX_DISTANCE;
             const threatAngle = (saved.target?.angleTo) || missile.angleTo;
             // Move out of missiles path
@@ -432,7 +432,7 @@ function tankAMain(tank, arena) {
             }
             
             // Calculate the threat level of all detected missiles
-            saved.missileThreat = tank.detectedMissiles.reduce((sum, nissile) => { return sum + missile.energy });
+            saved.missileThreat = tank.detectedMissiles.reduce((sum, _missile) => { return sum + missile.energy });
             if (saved.missileThreat > tank.energy) {
                 tank.bodyColor = "#ff0000";
             }
@@ -533,7 +533,7 @@ function tankAMain(tank, arena) {
     // Color tank
     const colorTankPart = (amount) => {
         const r = Math.round((1 - amount) * 255);
-        return r.toString(16).padStart(2, 0);
+        return r.toString(16).padStart(2, "0");
     }
 
     // Fill color

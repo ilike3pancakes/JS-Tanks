@@ -59,39 +59,8 @@ function getRelativeBrightness(hexColor) {
     const primaryColors = (r > 0) + (g > 0) + (b > 0);
     
     // Normalize luminance to the range of 0 to 1
-    const normalizedLuminance = (luminance) / (255 * primaryColors);
-    
     // Return the brightness indicator in the range of 0 to 1
-    return normalizedLuminance;
-}
-
-function colorMorph(hex, amount = 8) {
-    hex = hex.replace("#", "");
-    let r = parseInt(hex.slice(0, 2), 16);
-    let g = parseInt(hex.slice(2, 4), 16);
-    let b = parseInt(hex.slice(4, 6), 16);
-    
-    const delta = 2 * Math.sin(performance.now() / 10000);
-    const selector = Math.round(Math.abs(delta));
-
-
-    if (selector === 0) {
-        r = Math.min(255, Math.max(0, r + amount * (1 - Math.round(Math.random() * 2))));
-    }
-    else if (selector === 1) {
-        g = Math.min(255, Math.max(0, g + amount * (1 - Math.round(Math.random() * 2))));
-    }
-    else if (selector === 2) {
-        b = Math.min(255, Math.max(0, b + amount * (1 - Math.round(Math.random() * 2))));
-    }
-    
-    // Convert back to hexadecimal
-    const toHex = (c) => {
-        const hexValue = c.toString(16);
-        return hexValue.length === 1 ? "0" + hexValue : hexValue;
-    };
-    
-    return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+    return (luminance) / (255 * primaryColors);
 }
 
 

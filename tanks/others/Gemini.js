@@ -1,6 +1,4 @@
 function tankBMain(tank, arena) {
-    const maxDistance = Math.sqrt(arena.width ** 2 + arena.height ** 2);
-    const missileSpeed = 10;
 
     // Utility functions (same as before)
     tank.angleTo = (x, y) => Math.atan2(y - tank.y, x - tank.x) * 180 / Math.PI;
@@ -10,8 +8,7 @@ function tankBMain(tank, arena) {
         a2 = (a2 + 360000) % 360;
         if (a1 > 180) a1 -= 360;
         if (a2 > 180) a2 -= 360;
-        const diff = (a2 - a1 + 180) % 360 - 180;
-        return diff;
+        return (a2 - a1 + 180) % 360 - 180;
     };
 
     // Initialization (same as before, but add history)
