@@ -44,14 +44,19 @@ function newGame() {
 
     const distance = (Math.min(canvas.width, canvas.height) / 2) * 0.7;
     let angle = Math.random() * 360;
-    
+
     // Define tanks
     let x = distance * Math.cos(angle * Math.PI / 180);
     let y = distance * Math.sin(angle * Math.PI / 180);
-    tanks[0] = new Tank(tankAMain, 0, x, y, getRandomColorHex());
+    // Use the selected tank A AI
+    const tankAFunction = typeof getSelectedTankA === 'function' ? getSelectedTankA() : tankAMain;
+    tanks[0] = new Tank(tankAFunction, 0, x, y, getRandomColorHex());
+
     x = distance * Math.cos(180 + angle * Math.PI / 180);
     y = distance * Math.sin(180 + angle * Math.PI / 180);
-    tanks[1] = new Tank(tankBMain, 1, x, y, getRandomColorHex());
+    // Use the selected tank B AI
+    const tankBFunction = typeof getSelectedTankB === 'function' ? getSelectedTankB() : tankBMain;
+    tanks[1] = new Tank(tankBFunction, 1, x, y, getRandomColorHex());
 
     // Include a manually controlled tank if the manual URL param is set
     if (includeManualTank) {
@@ -92,8 +97,8 @@ function animate(currentTime) {
         // I would prefer to use requestAnimationFrame, but for some reason it was causing issues
         animate(Date.now());
     }, 1000 / fps);
-    
-    
+
+
     let gameSpeed;
     const speedValue = document.getElementById("selSpeed").value;
     if (speedValue < 0) {
@@ -133,7 +138,7 @@ function animate(currentTime) {
 
     if ((stepMode && !stepNextFrame)) return;
     stepNextFrame = !stepMode;
-    
+
     if (!showAnimation.checked && !paused) gameSpeed = MAX_ITERATIONS;
 
     for (let i = 0; i < gameSpeed; i++) {
@@ -164,7 +169,7 @@ function animate(currentTime) {
                 ctx.strokeText(iteration, arena.width / 2, 10);
                 ctx.fillText(iteration, arena.width / 2, 10);
                 ctx.restore();
-                
+
                 // Show tank A energy
                 let energyWidth = Math.min(1000, p1.energy) / MAX_TANK_ENERGY;
                 ctx.fillStyle = p1.color;
@@ -197,7 +202,7 @@ function animate(currentTime) {
                 ctx.strokeText(`${winCounts[p1.index]}`, energyBarWidth + 6, 19);
                 ctx.fillText(`${winCounts[p1.index]}`, energyBarWidth + 6, 19);
                 ctx.restore();
-        
+
 
                 // Show tank B energy
                 energyWidth = Math.min(1000, p2.energy) / MAX_TANK_ENERGY;
@@ -205,7 +210,7 @@ function animate(currentTime) {
                 ctx.strokeRect(arena.width - 6 - energyBarWidth, 3, energyBarWidth, 10);
                 ctx.fillStyle = p2.color;
                 ctx.fillRect(arena.width - 6 - energyBarWidth * energyWidth, 3, energyBarWidth * energyWidth, 10);
-                
+
 
                 // Show tank B name
                 ctx.save();
@@ -234,7 +239,7 @@ function animate(currentTime) {
                 ctx.fillText(`${winCounts[p2.index]}`, arena.width - energyBarWidth - 6, 19);
                 ctx.restore();
 
-            } catch (e) {console.error(e)}
+            } catch (e) { console.error(e) }
         }
 
         arena.gameCount = gameCount;
@@ -406,7 +411,7 @@ function logGameData(winner) {
             "Difference": Math.abs(wallCollisions[0] - wallCollisions[1]),
         },
     ];
-    
+
     const gameWinner = (winCounts[0] > winCounts[1]) ? ((winCounts[0] === winCounts[1]) ? "Draw" : tanks[0].name) : tanks[1].name;
     const draws = Math.abs(gameCount - winCounts[0] - winCounts[1]);
     const gameStats = {
@@ -435,8 +440,7 @@ function logGameData(winner) {
 }
 
 setInterval(() => {
-    if (!paused && document.getElementById("selSpeed").value !== 0)
-    {
+    if (!paused && document.getElementById("selSpeed").value !== 0) {
         gameTimeInSeconds++;
     }
 }, 1000);
