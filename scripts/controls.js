@@ -2,16 +2,14 @@
 // Set up tool tips to explain controls
 document.getElementById("divSpeed").title = "Select the game speed.";
 document.getElementById("divView").title = "Show animations:\nDisable to run game at max speed.";
-document.getElementById("divSound").title = "Enable sounds:\nNot recommended at hight game speeds";
+document.getElementById("divSound").title = "Enable sounds:\nNot recommended at height game speeds";
 document.getElementById("divBlocking").title = "Allow blocking:\nWhen enabled missiles can intercept each other.";
-
 
 
 const selGameSpeed = document.getElementById("selSpeed");
 const showAnimation = document.getElementById("toggleView");
 const enableSound = document.getElementById("toggleSound");
 const allowBlocking = document.getElementById("toggleBlocking");
-
 
 
 let paused = false;
@@ -23,7 +21,7 @@ let stepNextFrame = true;
 // Initialize game speed controller
 for (let i = 99; i > -100; i--) {
     const option = document.createElement("option");
-    option.value = i;
+    option.value = `${i}`;
     if (i === 0) {
         option.textContent = "Stop";
     }
@@ -47,7 +45,7 @@ if (params.has("pause")) {
 }
 
 if (params.has("speed")) {
-    let speed = params.get("speed");
+    let speed = Number.parseFloat(params.get("speed"));
     if (isNaN(speed) || speed < 0 || speed > 99) {
         alert("Invalid game speed specified. Using default value (1)");
         speed = 1;
@@ -67,7 +65,6 @@ if (params.has("manual")) {
 }
 
 
-
 // Handle key presses
 const keyDown = {};
 
@@ -84,7 +81,7 @@ document.addEventListener("keyup", (event) => {
             stepMode = false;
             paused = false;
         }
-        else if (!isNaN(event.key)) {
+        else if (!isNaN(Number.parseFloat(event.key))) {
             selGameSpeed.value = event.key * 10 * direction;
             stepMode = false;
             paused = false;
@@ -104,7 +101,7 @@ document.addEventListener("keyup", (event) => {
         }
         stepMode = false;
     }
-    else if (!isNaN(event.key)) {
+    else if (!isNaN(Number.parseFloat(event.key))) {
         const direction = keyDown["-"] ? -1 : 1;
         selGameSpeed.value = event.key * direction;
         stepMode = false;
@@ -116,7 +113,7 @@ document.addEventListener("keyup", (event) => {
         stepNextFrame = true;
     }
 
-    if (!isNaN(event.key) || event.key === "`") {
+    if (!isNaN(Number.parseFloat(event.key)) || event.key === "`") {
         selGameSpeed.focus()
     }
     
@@ -164,11 +161,11 @@ mouseArea.addEventListener("touchmove", (event) => {
     mouse.y = (touch.clientY - rect.top) * scaleY - canvas.height / 2;
 }, { passive: false });
 
-mouseArea.addEventListener("mousedown", (event) => {
+mouseArea.addEventListener("mousedown", (_event) => {
     mouse.isDown = true;
 });
 
-mouseArea.addEventListener("mouseup", (event) => {
+mouseArea.addEventListener("mouseup", (_event) => {
     mouse.isDown = false;
 });
 

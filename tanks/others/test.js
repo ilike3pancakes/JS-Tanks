@@ -2,10 +2,6 @@ function tankAMain(tank, arena) {
 
     const saved = tank.retained;
     const RAMPS_FUNCTIONS = rampsFunctions(tank, arena, saved);
-    const HALF_WIDTH = arena.width / 2;
-    const HALF_HEIGHT = arena.height / 2;
-    const dSin = RAMPS_FUNCTIONS.dSin;
-    const dCos = RAMPS_FUNCTIONS.dCos;
     const isWallCollision = RAMPS_FUNCTIONS.isWallCollision;
     const predictFuturePosition = RAMPS_FUNCTIONS.predictFuturePosition;
 
@@ -24,8 +20,6 @@ function tankAMain(tank, arena) {
         collision = isWallCollision(predicted.x, predicted.y);
     }
 
-
-
     // Update targets information
     if (tank.detectedTanks.length > 0) {
         const target = tank.detectedTanks[0];
@@ -39,7 +33,6 @@ function tankAMain(tank, arena) {
     }
 
 }
-
 
 
 function rampsFunctions(tank, arena, saved) {
@@ -78,8 +71,8 @@ function rampsFunctions(tank, arena, saved) {
             let predictedY = subject.y;
             for (let i = 0; i < frames; i++) {
                 predictedAim = predictedAim + subject.bodyTurn * MAX_BODY_TURN_DEGREES;
-                predictedX = predictedX + subject.actualSpeed * cosD(predictedAim);
-                predictedY = predictedY + subject.actualSpeed * sinD(predictedAim);
+                predictedX = predictedX + subject.actualSpeed * this.dCos(predictedAim);
+                predictedY = predictedY + subject.actualSpeed * this.dSin(predictedAim);
             }
             return { x: predictedX, y: predictedY, bodyAim: predictedAim };
         },

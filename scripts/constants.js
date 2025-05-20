@@ -2,10 +2,6 @@ const MAX_ITERATIONS = 9999;
 
 const ARENA_WIDTH = 400;
 const ARENA_HEIGHT = 400;
-const MIN_X = -ARENA_WIDTH / 2;
-const MAX_X = ARENA_WIDTH / 2;
-const MIN_Y = -ARENA_HEIGHT / 2;
-const MAX_Y = ARENA_HEIGHT / 2;
 const MAX_DISTANCE = Math.sqrt(ARENA_WIDTH ** 2 + ARENA_HEIGHT ** 2);
 
 const TANK_SIZE = 6;

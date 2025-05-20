@@ -1,5 +1,5 @@
 
-let gameover = false;
+let gameOver = false;
 let iteration = 0;
 let tanks = [];
 let arena = {};
@@ -12,7 +12,6 @@ let scorePercentageDif = {};
 let winPercentage = {};
 let gameCount = 0;
 let winBalance = {};
-let lastWinState = 0;
 let missilesFired = [0, 0];
 let missilesHit = [0, 0];
 let tankCollisions = [0, 0];
@@ -27,8 +26,6 @@ let totalGameDuration = 0;
 let gameTimeInSeconds = 0;
 let lastTime = 0;
 
-let obstacleDensity = 0.9;
-
 const background = document.getElementById("bgImage");
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
@@ -42,19 +39,24 @@ function newGame() {
     iteration = 0;
     tanks = [];
     arena = {};
-    gameover = false;
+    gameOver = false;
     gameCount++;
 
     const distance = (Math.min(canvas.width, canvas.height) / 2) * 0.7;
     let angle = Math.random() * 360;
-    
+
     // Define tanks
     let x = distance * Math.cos(angle * Math.PI / 180);
     let y = distance * Math.sin(angle * Math.PI / 180);
-    tanks[0] = new Tank(tankAMain, 0, x, y, getRandomColorHex());
+    // Use the selected tank A AI
+    const tankAFunction = typeof getSelectedTankA === 'function' ? getSelectedTankA() : tankAMain;
+    tanks[0] = new Tank(tankAFunction, 0, x, y, getRandomColorHex());
+
     x = distance * Math.cos(180 + angle * Math.PI / 180);
     y = distance * Math.sin(180 + angle * Math.PI / 180);
-    tanks[1] = new Tank(tankBMain, 1, x, y, getRandomColorHex());
+    // Use the selected tank B AI
+    const tankBFunction = typeof getSelectedTankB === 'function' ? getSelectedTankB() : tankBMain;
+    tanks[1] = new Tank(tankBFunction, 1, x, y, getRandomColorHex());
 
     // Include a manually controlled tank if the manual URL param is set
     if (includeManualTank) {
@@ -80,17 +82,6 @@ function newGame() {
 }
 
 
-function objectsOverlap(o1, o2) {
-    return !(
-        o1.x + o1.width <= o2.x || o2.x + o2.width <= o1.x ||
-        o1.y + o1.height <= o2.y || o2.y + o2.height <= o1.y
-    );
-}
-
-
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
     gamepad.initialize();
 });
@@ -106,9 +97,9 @@ function animate(currentTime) {
         // I would prefer to use requestAnimationFrame, but for some reason it was causing issues
         animate(Date.now());
     }, 1000 / fps);
-    
-    
-    let gameSpeed = 1;
+
+
+    let gameSpeed;
     const speedValue = document.getElementById("selSpeed").value;
     if (speedValue < 0) {
         fps = 60 / (1 + Math.abs(speedValue));
@@ -147,7 +138,7 @@ function animate(currentTime) {
 
     if ((stepMode && !stepNextFrame)) return;
     stepNextFrame = !stepMode;
-    
+
     if (!showAnimation.checked && !paused) gameSpeed = MAX_ITERATIONS;
 
     for (let i = 0; i < gameSpeed; i++) {
@@ -178,7 +169,7 @@ function animate(currentTime) {
                 ctx.strokeText(iteration, arena.width / 2, 10);
                 ctx.fillText(iteration, arena.width / 2, 10);
                 ctx.restore();
-                
+
                 // Show tank A energy
                 let energyWidth = Math.min(1000, p1.energy) / MAX_TANK_ENERGY;
                 ctx.fillStyle = p1.color;
@@ -201,17 +192,17 @@ function animate(currentTime) {
                 ctx.strokeStyle = "#000000";
                 ctx.lineWidth = 1;
                 ctx.fillStyle = "#ffffff";
-                ctx.strokeText(~~scores[p1.index] + ~~p1.matchScore, 6, 19);
-                ctx.fillText(~~scores[p1.index] + ~~p1.matchScore, 6, 19);
+                ctx.strokeText(`${~~scores[p1.index] + ~~p1.matchScore}`, 6, 19);
+                ctx.fillText(`${~~scores[p1.index] + ~~p1.matchScore}`, 6, 19);
 
                 // Show tank A wins
                 ctx.textAlign = "right";
                 ctx.strokeStyle = "#000000";
                 ctx.lineWidth = 1;
-                ctx.strokeText(winCounts[p1.index], energyBarWidth + 6, 19);
-                ctx.fillText(winCounts[p1.index], energyBarWidth + 6, 19);
+                ctx.strokeText(`${winCounts[p1.index]}`, energyBarWidth + 6, 19);
+                ctx.fillText(`${winCounts[p1.index]}`, energyBarWidth + 6, 19);
                 ctx.restore();
-        
+
 
                 // Show tank B energy
                 energyWidth = Math.min(1000, p2.energy) / MAX_TANK_ENERGY;
@@ -219,7 +210,7 @@ function animate(currentTime) {
                 ctx.strokeRect(arena.width - 6 - energyBarWidth, 3, energyBarWidth, 10);
                 ctx.fillStyle = p2.color;
                 ctx.fillRect(arena.width - 6 - energyBarWidth * energyWidth, 3, energyBarWidth * energyWidth, 10);
-                
+
 
                 // Show tank B name
                 ctx.save();
@@ -237,18 +228,18 @@ function animate(currentTime) {
                 ctx.strokeStyle = "#000000";
                 ctx.lineWidth = 1;
                 ctx.fillStyle = "#ffffff";
-                ctx.strokeText(~~scores[p2.index] + ~~p2.matchScore, arena.width - 6, 19);
-                ctx.fillText(~~scores[p2.index] + ~~p2.matchScore, arena.width - 6, 19);
+                ctx.strokeText(`${~~scores[p2.index] + ~~p2.matchScore}`, arena.width - 6, 19);
+                ctx.fillText(`${~~scores[p2.index] + ~~p2.matchScore}`, arena.width - 6, 19);
 
                 // Show tank B wins
                 ctx.textAlign = "left";
                 ctx.strokeStyle = "#000000";
                 ctx.lineWidth = 1;
-                ctx.strokeText(winCounts[p2.index], arena.width - energyBarWidth - 6, 19);
-                ctx.fillText(winCounts[p2.index], arena.width - energyBarWidth - 6, 19);
+                ctx.strokeText(`${winCounts[p2.index]}`, arena.width - energyBarWidth - 6, 19);
+                ctx.fillText(`${winCounts[p2.index]}`, arena.width - energyBarWidth - 6, 19);
                 ctx.restore();
 
-            } catch (e) {console.error(e)}
+            } catch (e) { console.error(e) }
         }
 
         arena.gameCount = gameCount;
@@ -286,13 +277,13 @@ function animate(currentTime) {
             tanks[0].state = "dead";
             tanks[1].state = "dead";
         }
-        if (arena.tanks.length === 0 && !gameover) {
+        if (arena.tanks.length === 0 && !gameOver) {
             let winner = { name: "Draw" };
             logGameData(winner);
             newGame();
         }
-        if (arena.tanks.length < 2 && !gameover) {
-            gameover = true;
+        if (arena.tanks.length < 2 && !gameOver) {
+            gameOver = true;
             const winner = arena.tanks[0];
             if (!winCounts[winner.index]) {
                 winCounts[winner.index] = 0;
@@ -313,7 +304,7 @@ function animate(currentTime) {
         }
 
         // Increment iteration
-        if (!gameover) {
+        if (!gameOver) {
             iteration++;
         }
         else {
@@ -420,7 +411,7 @@ function logGameData(winner) {
             "Difference": Math.abs(wallCollisions[0] - wallCollisions[1]),
         },
     ];
-    
+
     const gameWinner = (winCounts[0] > winCounts[1]) ? ((winCounts[0] === winCounts[1]) ? "Draw" : tanks[0].name) : tanks[1].name;
     const draws = Math.abs(gameCount - winCounts[0] - winCounts[1]);
     const gameStats = {
@@ -449,7 +440,9 @@ function logGameData(winner) {
 }
 
 setInterval(() => {
-   if (!paused && selSpeed.value !== 0) gameTimeInSeconds++;
+    if (!paused && document.getElementById("selSpeed").value !== 0) {
+        gameTimeInSeconds++;
+    }
 }, 1000);
 
 window.addEventListener("error", (e) => {
@@ -461,7 +454,7 @@ window.addEventListener("error", (e) => {
 function showError(error) {
     error = JSON.stringify(error, null, 2);
     const overlay = document.getElementById("overlay");
-    overlay.style.zIndex = 9999;
+    overlay.style.zIndex = "9999";
     overlay.innerHTML = `<pre>${error}</pre>`;
     overlay.style.display = "block";
 }

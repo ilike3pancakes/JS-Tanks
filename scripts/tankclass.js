@@ -263,7 +263,7 @@ class Tank {
                 this.color = actions.color;
             }
             else {
-                errors.push("Invalid hexidecimal color code for tank.color");
+                errors.push("Invalid hexadecimal color code for tank.color");
             }
         }
         if (actions.fillColor) {
@@ -271,7 +271,7 @@ class Tank {
                 this.fillColor = actions.fillColor;
             }
             else {
-                errors.push("Invalid hexidecimal color code for tank.fillColor");
+                errors.push("Invalid hexadecimal color code for tank.fillColor");
             }
         }
         if (actions.treadColor) {
@@ -279,7 +279,7 @@ class Tank {
                 this.treadColor = actions.treadColor;
             }
             else {
-                errors.push("Invalid hexidecimal color code for tank.treadColor");
+                errors.push("Invalid hexadecimal color code for tank.treadColor");
             }
         }
         if (actions.gunColor) {
@@ -287,7 +287,7 @@ class Tank {
                 this.gunColor = actions.gunColor;
             }
             else {
-                errors.push("Invalid hexidecimal color code for tank.gunColor");
+                errors.push("Invalid hexadecimal color code for tank.gunColor");
             }
         }
         if (actions.radarColor) {
@@ -295,7 +295,7 @@ class Tank {
                 this.radarColor = actions.radarColor;
             }
             else {
-                errors.push("Invalid hexidecimal color code for tank.radarColor");
+                errors.push("Invalid hexadecimal color code for tank.radarColor");
             }
         }
         if (actions.name) {

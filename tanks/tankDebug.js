@@ -15,8 +15,7 @@ function debugTank(tank, arena) {
         a2 = (a2 + 360000) % 360;
         if (a1 > 180) a1 -= 360;
         if (a2 > 180) a2 -= 360;
-        const diff = (a2 - a1 + 180) % 360 - 180;
-        return diff;
+        return (a2 - a1 + 180) % 360 - 180;
     };
 
     // CHEATING MY ASS OFF
@@ -82,13 +81,9 @@ function debugTank(tank, arena) {
     if (desiredSpeed) {
         tank.speed = desiredSpeed;
         if (Math.abs(turnAmount) > 90) {
-            turnAmount *= -1;
             tank.speed *= -1;
         }
     }
-
-
-
 
     // Turn gun toward mouse
     if (!tank.retained.controllerConnected) {
@@ -101,8 +96,7 @@ function debugTank(tank, arena) {
     // Turn gun using gamepad / controller
     if (controller.axis2.magnitude) {
         const desiredGunAim = controller.axis2.direction * 180 / Math.PI;
-        const gunTurn = angleDifference(tank.bodyAim + tank.gunAim, desiredGunAim);
-        tank.gunTurn = gunTurn;
+        tank.gunTurn = angleDifference(tank.bodyAim + tank.gunAim, desiredGunAim);
         tank.retained.controllerConnected = true;
     }
 

@@ -5,9 +5,12 @@
 
 body {
     display: flex;
-    flex-direction: column; /* Default to vertical stacking */
-    justify-content: center; /* Center items horizontally */
-    align-items: center; /* Center items vertically */
+    flex-direction: column;
+    /* Default to vertical stacking */
+    justify-content: center;
+    /* Center items horizontally */
+    align-items: center;
+    /* Center items vertically */
     height: 100vh;
     background-color: #000000;
 }
@@ -17,17 +20,20 @@ body {
 }
 
 #divOptions {
-    margin-bottom: 20px; /* Default margin below options */
-    display: flex; /* Use flexbox for options by default for horizontal arrangement */
-    align-items: center; /* Vertically align items in the options div */
+    margin-bottom: 20px;
+    /* Default margin below options */
+    display: flex;
+    /* Use flexbox for options by default for horizontal arrangement */
+    align-items: center;
+    /* Vertically align items in the options div */
 }
 
 canvas {
     border: 1px solid white;
     border-radius: 7px;
     background-color: #888888;
-    box-shadow: 10px 10px 7.5px rgba(0, 0, 0, 0.9);
-    position: relative; /* Needed for absolute positioning of options in landscape */
+    position: relative;
+    /* Needed for absolute positioning of options in landscape */
     height: auto;
     width: 83vw;
 }
@@ -50,67 +56,107 @@ canvas {
 }
 
 #toggleView {
-    position: static; /* Allow it to flow within divOptions */
-    width: auto; /* Adjust as needed */
-    margin-right: 10px; /* Add spacing */
+    position: static;
+    /* Allow it to flow within divOptions */
+    width: auto;
+    /* Adjust as needed */
+    margin-right: 10px;
+    /* Add spacing */
     margin-bottom: 10px;
 }
 
 #toggleViewLabel {
-    position: static; /* Allow it to flow within divOptions */
-    margin-right: 15px; /* Add spacing */
+    position: static;
+    /* Allow it to flow within divOptions */
+    margin-right: 15px;
+    /* Add spacing */
     margin-bottom: 10px;
 }
 
 #toggleSound {
-    position: static; /* Allow it to flow within divOptions */
-    width: auto; /* Adjust as needed */
-    margin-right: 10px; /* Add spacing */
+    position: static;
+    /* Allow it to flow within divOptions */
+    width: auto;
+    /* Adjust as needed */
+    margin-right: 10px;
+    /* Add spacing */
     margin-bottom: 10px;
 }
 
 #toggleSoundLabel {
-    position: static; /* Allow it to flow within divOptions */
+    position: static;
+    /* Allow it to flow within divOptions */
     margin-bottom: 10px;
 }
 
 #toggleBlocking {
-    position: static; /* Allow it to flow within divOptions */
-    width: auto; /* Adjust as needed */
-    margin-right: 10px; /* Add spacing */
+    position: static;
+    /* Allow it to flow within divOptions */
+    width: auto;
+    /* Adjust as needed */
+    margin-right: 10px;
+    /* Add spacing */
     margin-bottom: 10px;
 }
 
 #toggleBlockingLabel {
-    position: static; /* Allow it to flow within divOptions */
+    position: static;
+    /* Allow it to flow within divOptions */
+    margin-bottom: 10px;
+}
+
+#divTankA,
+#divTankB {
+    position: static;
+    /* Allow it to flow within divOptions */
+    margin-right: 10px;
+    /* Add spacing */
+    margin-bottom: 10px;
+}
+
+#selTankA,
+#selTankB {
+    margin-right: 10px;
     margin-bottom: 10px;
 }
 
 /* When screen width is greater than height (landscape orientation) */
 @media (min-width: 1px) and (orientation: landscape) {
     body {
-        flex-direction: row; /* Arrange items horizontally in landscape */
-        justify-content: center; /* Center items horizontally */
-        align-items: center; /* Center items vertically */
+        flex-direction: row;
+        /* Arrange items horizontally in landscape */
+        justify-content: center;
+        /* Center items horizontally */
+        align-items: center;
+        /* Center items vertically */
     }
 
     #divOptions {
-        position: absolute; /* Position relative to the canvas */
-        top: 10px; /* Align with the top corner */
-        left: 10px; /* Align with the left corner */
-        flex-direction: column; /* Stack options vertically on the side */
-        margin: 0; /* Remove default margins */
-        align-items: flex-start; /* Align items to the start (left) */
+        position: absolute;
+        /* Position relative to the canvas */
+        top: 10px;
+        /* Align with the top corner */
+        left: 10px;
+        /* Align with the left corner */
+        flex-direction: column;
+        /* Stack options vertically on the side */
+        margin: 0;
+        /* Remove default margins */
+        align-items: flex-start;
+        /* Align items to the start (left) */
     }
 
     canvas {
-        height: 83vh; /* Adjust canvas height in landscape */
-        width: auto; /* Adjust width based on aspect ratio */
+        height: 83vh;
+        /* Adjust canvas height in landscape */
+        width: auto;
+        /* Adjust width based on aspect ratio */
     }
 }
 
 /* When screen height is greater than or equal to width (portrait orientation) */
 @media (min-width: 1px) and (orientation: portrait) {
+
     /* Keep the default flexbox layout for portrait */
     #divOptions {
         margin-top: 20px;
@@ -119,7 +165,8 @@ canvas {
         flex-direction: row;
         align-items: center;
     }
-    #divOptions > * {
+
+    #divOptions>* {
         padding-left: 20px;
         padding-right: 20px;
     }

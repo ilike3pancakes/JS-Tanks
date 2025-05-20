@@ -128,7 +128,6 @@ class Missile {
                     tank.showMessage = 50;
                     this.state = "exploding";
                     this.owner.missiles[this.id].hit = true;
-                    return;
                 }
             }
         });

@@ -17,13 +17,6 @@ function soundExplosion(volume = 0.8, playbackRate = 1) {
 }
 
 
-
-
-
-
-
-
-
 function soundNote(frequency, duration, volume = 1, waveShape = "sine") {
     // Exit conditions
     if (!document.getElementById("toggleSound").checked) {

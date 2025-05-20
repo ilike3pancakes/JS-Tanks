@@ -2,7 +2,6 @@ function tankBMain(tank, arena) {
     // Adjust base constants to match Tank A's effectiveness
     const CRITICAL_ENERGY = 150; // Lower threshold for more aggressive play
     const LOW_ENERGY = 300; // Earlier energy conservation
-    const OPTIMAL_RANGE = arena.width * 0.2; // Slightly further range for better survival
     const MIN_CHARGE_ITERATIONS = 200; // Faster mode switching
     const saved = tank.retained;
 
@@ -23,17 +22,12 @@ function tankBMain(tank, arena) {
     }
 
     // Add Tank A's constants at the top
-    const LEARNING_ENABLED = false;
-    const COLLISION_COOLDOWN_TIME = 36;
     const DEGREES = Math.PI / 180;
     const RADIANS = 180 / Math.PI;
     const MAX_DISTANCE = Math.sqrt(arena.width ** 2 + arena.height ** 2);
     const MAX_RADAR_ARC_DEGREES = 180;
-    const MAX_BODY_TURN_DEGREES = 1;
-    const MAX_GUN_TURN_DEGREES = 2;
     const MISSILE_SPEED = 4;
     const MAX_MISSILE_ENERGY = 50;
-    const MISSILE_ENERGY_MULTIPLIER = 4;
 
     // Add helper functions after memory helpers
     if (!tank.getTargetPriority) {
@@ -392,12 +386,6 @@ function tankBMain(tank, arena) {
         ratio: tank.energy / 1000,
         efficient: tank.energy > 900, // Higher efficiency threshold
         mode: saved.mode,
-        canFire: function(cost) {
-            const threshold = this.mode === 'berserk' ? 
-                CRITICAL_ENERGY * 0.3 : // Even more aggressive in berserk
-                CRITICAL_ENERGY * 1.5;  // More conservative in normal mode
-            return tank.energy - cost > threshold;
-        }
     };
 
     // Replace targeting and shooting block with Tank A's exact logic

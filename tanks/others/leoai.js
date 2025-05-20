@@ -9,8 +9,7 @@ function tankBMain(tank, arena) {
         a2 = (a2 + 360000) % 360;
         if (a1 > 180) a1 -= 360;
         if (a2 > 180) a2 -= 360;
-        const diff = (a2 - a1 + 180) % 360 - 180;
-        return diff;
+        return (a2 - a1 + 180) % 360 - 180;
     };
 
     tank.calculateGunTurn = (x, y) => {
@@ -34,9 +33,9 @@ function tankBMain(tank, arena) {
         const gunHeatFactor = (1 - Math.min(1, 1 / Math.max(1, target.gunHeat))) ** (1 / 2);
         const hitProbability = accuracyFactor * 0.4 + trajectoryFactor * 0.3 + distanceFactor * 0.2 + speedFactor * 0.1;
         const vulnerabilityFactor = energyFactor * 0.6 + speedFactor * 0.25 + gunHeatFactor * 0.15;
-        const aggresionBalance = (tank.retained.selfConfidence) ? Math.min(1, Math.max(0, 1 - tank.retained.selfConfidence)) : 0.5;
-        const shotIsGood = hitProbability * (1 - aggresionBalance);
-        const targetIsVulnerable = vulnerabilityFactor * aggresionBalance;
+        const aggressionBalance = (tank.retained.selfConfidence) ? Math.min(1, Math.max(0, 1 - tank.retained.selfConfidence)) : 0.5;
+        const shotIsGood = hitProbability * (1 - aggressionBalance);
+        const targetIsVulnerable = vulnerabilityFactor * aggressionBalance;
         return (shotIsGood * 4 + targetIsVulnerable) / 5;
     }
     
@@ -56,7 +55,6 @@ function tankBMain(tank, arena) {
         tank.radarArc = 1;
         tank.speed = 1;
         tank.gunTurn = tank.calculateGunTurn(0, 0);
-        tank.bodyTurn = tank.bodyTurn;
         tank.retained.wanderPattern = 0;
         tank.retained.previousTargetData = [];
         tank.retained.missileEvasionReverse = 0;
@@ -65,8 +63,8 @@ function tankBMain(tank, arena) {
         tank.retained.scanDirection = 0;
         tank.retained.targets = {};
         tank.retained.matchOver = false;
-        tank.retained.wins = tank.getMemory("wincount") || 0;
-        tank.retained.gameCount = tank.getMemory("gamecount") || 0;
+        tank.retained.wins = tank.getMemory("winCount") || 0;
+        tank.retained.gameCount = tank.getMemory("gameCount") || 0;
         tank.retained.flankDirection = Math.random() > 0.5 ? 1 : -1;
         tank.retained.flankStateTime = 0;
         tank.retained.flankState = "approach";
@@ -76,7 +74,7 @@ function tankBMain(tank, arena) {
         tank.retained.avoidingWall = false;
         tank.retained.activeMissile = null;
         tank.retained.searchPattern = 0;
-        tank.commitMemory("gamecount", tank.retained.gameCount + 1);
+        tank.commitMemory("gameCount", tank.retained.gameCount + 1);
         tank.retained.closestEnemyDistance = Infinity;
         tank.retained.lastWallAvoidanceAngle = 0;
         tank.retained.lastOpponentMoveDirection = "right"; // Initialize a default direction
@@ -93,14 +91,15 @@ function tankBMain(tank, arena) {
     let scanning = true;
     const targetArray = [];
     const deadTargetsExist = () => Object.keys(tank.retained.targets).length > arena.tanksRemaining - 1;
+    let longestAbsence;
     while (deadTargetsExist() || scanning) {
-        let removalIndex = longestAbscence = -1;
+        let removalIndex = longestAbsence = -1;
         for (const targetIndex of Object.keys(tank.retained.targets)) {
             const target = tank.retained.targets[targetIndex];
-            const abscenseTime = tank.iteration - target.iteration;
-            if (abscenseTime > longestAbscence) {
+            const absenceTime = tank.iteration - target.iteration;
+            if (absenceTime > longestAbsence) {
                 removalIndex = targetIndex;
-                longestAbscence = abscenseTime;
+                longestAbsence = absenceTime;
             }
             targetArray.push(target);
         }
@@ -108,14 +107,10 @@ function tankBMain(tank, arena) {
         scanning = false;
     }
 
-
-
     const maxTargetEnergy = targetArray.reduce((max, current) => { return Math.max(max, current.energy) }, 0);
     const ttlTargetEnergy = targetArray.reduce((sum, current) => { return sum + current.energy }, 0);
-    const avgTargetEnergy = ttlTargetEnergy / targetArray.length;
-    const selfConfidence = (tank.detectedTanks.length === 0) ? 1 / (arena.tanksRemaining - 1) : tank.energy / (tank.energy + ttlTargetEnergy);
-    tank.retained.selfConfidence = selfConfidence;
-    tank.retained.canBeAggressive = tank.retained.target && (arena.tanksRemaining == 2 && tank.energy > tank.retained.target.energy * 2);
+    tank.retained.selfConfidence = (tank.detectedTanks.length === 0) ? 1 / (arena.tanksRemaining - 1) : tank.energy / (tank.energy + ttlTargetEnergy);
+    tank.retained.canBeAggressive = tank.retained.target && arena.tanksRemaining === 2 && tank.energy > tank.retained.target.energy * 2;
 
     const minSpeed = tank.energy < 200 ? 0.3 : (tank.energy < 500 ? 0.6 : 0.8);
     if (Math.abs(tank.speed) < minSpeed) {
@@ -244,12 +239,10 @@ function tankBMain(tank, arena) {
             }
             avgVelocityX /= Math.max(1, totalDeltaTime);
             avgVelocityY /= Math.max(1, totalDeltaTime);
-            avgTurn /= Math.max(1, totalDeltaTime);
         }
         else {
             avgVelocityX = target.actualSpeed * Math.cos(target.bodyAim * Math.PI / 180);
             avgVelocityY = target.actualSpeed * Math.sin(target.bodyAim * Math.PI / 180);
-            avgTurn = 0;
         }
 
         let timeToIntercept = target.distance / missileSpeed;
@@ -267,7 +260,6 @@ function tankBMain(tank, arena) {
         let predictedTargetX = target.x + avgVelocityX * timeToIntercept;
         let predictedTargetY = target.y + avgVelocityY * timeToIntercept;
         if (Math.abs(target.speed) < 0.1) {  // Enhanced stationary prediction
-            timeToIntercept *= 1.5; // Aim at current position longer
             predictedTargetX = target.x;
             predictedTargetY = target.y;
         }
@@ -283,9 +275,9 @@ function tankBMain(tank, arena) {
           target.justFired = false;
         }
 
-        if (tank.retained.lastOpponentMoveDirection == "right") {
+        if (tank.retained.lastOpponentMoveDirection === "right") {
           predictedTargetX += 5;
-        } else if (tank.retained.lastOpponentMoveDirection == "left") {
+        } else if (tank.retained.lastOpponentMoveDirection === "left") {
           predictedTargetX -= 5;
         }
 
@@ -316,17 +308,7 @@ function tankBMain(tank, arena) {
         }
 
         if (fireProbability > Math.random()) {
-            const isTargetInRange = target.distance < arena.width / 2;
-            const perpendicularSpeedComponent = tank.perpendicularSpeedComponent(target);
-            let accuracyMultiplier = (1 - aimError / 5) ** 2;
-            let distanceMultiplier = (1 - target.distance / maxDistance) ** 2;
-            let trajectoryMultiplier = (1 - perpendicularSpeedComponent) ** 2;
-            if (!isTargetInRange) {
-                distanceMultiplier = distanceMultiplier ** 2;
-                accuracyMultiplier = accuracyMultiplier ** 2;
-            }
-            
-            // Reduced fire power, but increased firing rate (in the loop)
+            // Reduced firepower, but increased firing rate (in the loop)
             const firePower = 5; //  energy per shot.  Adjust as needed.
 
             if (tank.energy >= firePower) { // Check if we have enough energy to fire.
@@ -594,7 +576,7 @@ function tankBMain(tank, arena) {
     if (arena.tanksRemaining === 1 && !tank.retained.matchOver && tank.energy > 0) {
         tank.retained.matchOver = true;
         tank.retained.wins++;
-        tank.commitMemory("wincount", tank.retained.wins);
+        tank.commitMemory("winCount", tank.retained.wins);
         tank.gunTurn = 1;
         tank.bodyTurn = -0.5;
         tank.speed = 0.5;
@@ -660,7 +642,7 @@ function tankBMain(tank, arena) {
     }
 
     if (tank.firePower) {
-        tank.fire(firePower)
+        tank.fire(1)
     }
 
     return tank;
